@@ -1,0 +1,57 @@
+<div id="container">
+  <div id="form-container">
+    <h2>Login</h2>
+    <form #LoginForm="ngForm" (ngSubmit)="onSubmit(LoginForm)">
+         <input
+        #name="ngModel"
+        type="text"
+        name="Name"
+        placeholder="UserName"
+        required
+        pattern="^[A-Za-z]{3,15}$"
+        [(ngModel)]="user.Name"
+        [appStyleOnError]="(name.errors?.['required'] || name.errors?.['pattern']) && (name.touched || name.dirty)"
+      />
+      <span *ngIf="name.errors?.['required'] && (name.touched || name.dirty)">Please Enter Valid Name</span>
+      <span *ngIf="name.errors?.['pattern'] && (name.touched || name.dirty)">Please Enter Alphabets only</span>
+      <input
+        #phoneNumber="ngModel"
+        type="text"
+        placeholder="PhoneNumber"
+        name="PhoneNumber"
+        required
+        pattern="^[0-9]{3,15}$"
+        [(ngModel)]="user.PhoneNumber"
+        [appStyleOnError]="(phoneNumber.errors?.['required'] || phoneNumber.errors?.['pattern']) && (phoneNumber.touched || phoneNumber.dirty)"
+      />
+      <span *ngIf="phoneNumber.errors?.['required'] && (phoneNumber.touched || phoneNumber.dirty)">
+        Please enter your phone number
+      </span>
+      <span *ngIf="phoneNumber.errors?.['pattern'] && (phoneNumber.touched || phoneNumber.dirty)">
+        Phone number must be 3 to 15 digits
+      </span>
+
+      <input
+        #password="ngModel"
+        type="password"
+        placeholder="Password"
+        name="Password"
+        required
+        pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])[A-Za-z0-9@#$%^&+=]{8,20}$"
+        [(ngModel)]="user.Password"
+        [appStyleOnError]="(password.errors?.['required'] || password.errors?.['pattern']) && (password.touched || password.dirty)"
+      />
+      <span *ngIf="password.errors?.['required'] && (password.touched || password.dirty)">
+        Please enter your password
+      </span>
+      <span *ngIf="password.errors?.['pattern'] && (password.touched || password.dirty)">
+        Password must include uppercase, lowercase, number & special character (8-20 chars)
+      </span>
+
+      <button [disabled] = "LoginForm.invalid" type="submit">Login</button>
+     <p>New User? <a routerLink="/UserRegister">Register as User</a></p>
+ <p>New Driver? <a routerLink="/DriverRegister">Register as Driver</a></p>
+
+    </form>
+  </div>
+</div>

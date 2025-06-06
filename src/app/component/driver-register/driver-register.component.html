@@ -1,0 +1,116 @@
+<div id="container">
+  <div id="form-container">
+    <h2>Register</h2>
+    <form #RegisterDriverForm="ngForm" (ngSubmit)="onSubmit(RegisterDriverForm)">
+      
+      <input
+        #name="ngModel"
+        type="text"
+        name="Name"
+        placeholder="UserName"
+        required
+        pattern="^[A-Za-z]{3,15}$"
+        [(ngModel)]="driver.UserName"
+        [appStyleOnError]="(name.errors?.['required'] || name.errors?.['pattern']) && (name.touched || name.dirty)"
+      />
+      <span *ngIf="name.errors?.['required'] && (name.touched || name.dirty)">Please Enter Valid Name</span>
+      <span *ngIf="name.errors?.['pattern'] && (name.touched || name.dirty)">Please Enter Alphabets only</span>
+
+      <input
+        #phoneNumber="ngModel"
+        type="text"
+        name="PhoneNumber"
+        placeholder="PhoneNumber"
+        required
+        pattern="^[0-9]{3,15}$"
+        [(ngModel)]="driver.PhoneNumber"
+        [appStyleOnError]="(phoneNumber.errors?.['required'] || phoneNumber.errors?.['pattern']) && (phoneNumber.touched || phoneNumber.dirty)"
+      />
+      <span *ngIf="phoneNumber.errors?.['required'] && (phoneNumber.touched || phoneNumber.dirty)">Please Enter Valid Phone Number</span>
+      <span *ngIf="phoneNumber.errors?.['pattern'] && (phoneNumber.touched || phoneNumber.dirty)">Please Enter Numbers only</span>
+
+      <input
+        #password="ngModel"
+        type="password"
+        name="Password"
+        placeholder="Password"
+        required
+        pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])[A-Za-z0-9@#$%^&+=]{8,20}$"
+        [(ngModel)]="driver.Password"
+        [appStyleOnError]="(password.errors?.['required'] || password.errors?.['pattern']) && (password.touched || password.dirty)"
+      />
+      <span *ngIf="password.errors?.['required'] && (password.touched || password.dirty)">Please Enter Password</span>
+      <span *ngIf="password.errors?.['pattern'] && (password.touched || password.dirty)">Password must have uppercase, lowercase, number & special char</span>
+
+      <select
+        #gender="ngModel"
+        name="Gender"
+        required
+        [(ngModel)]="driver.Gender"
+        [appStyleOnError]="gender.errors?.['required'] && (gender.touched || gender.dirty)"
+      >
+        <option value="" disabled selected>Select Gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="others">Others</option>
+      </select>
+      <span *ngIf="gender.errors?.['required'] && (gender.touched || gender.dirty)">Please Select Gender</span>
+
+      <input
+        #carNumber="ngModel"
+        type="text"
+        name="CarNumber"
+        placeholder="CarNumber"
+        required
+        pattern="^[A-Za-z0-9]{10}$"
+        [(ngModel)]="driver.CarNumber"
+        [appStyleOnError]="(carNumber.errors?.['required'] || carNumber.errors?.['pattern']) && (carNumber.touched || carNumber.dirty)"
+      />
+      <span *ngIf="carNumber.errors?.['required'] && (carNumber.touched || carNumber.dirty)">Please Enter Valid Car Number</span>
+      <span *ngIf="carNumber.errors?.['pattern'] && (carNumber.touched || carNumber.dirty)">Alphabets and Numbers only, length 10</span>
+
+      <select
+        #carType="ngModel"
+        name="CarType"
+        required
+        [(ngModel)]="driver.CarType"
+        [appStyleOnError]="carType.errors?.['required'] && (carType.touched || carType.dirty)"
+      >
+        <option value="" disabled selected>Select Car Type</option>
+        <option value="Sedan">Sedan</option>
+        <option value="UV">UV</option>
+        <option value="Others">Others</option>
+      </select>
+      <span *ngIf="carType.errors?.['required'] && (carType.touched || carType.dirty)">Please Select Car Type</span>
+
+      <input
+        #aadharCardNumber="ngModel"
+        type="text"
+        name="AadharCardNumber"
+        placeholder="AadharCardNumber"
+        required
+        pattern="^[A-Za-z0-9]{10}$"
+        [(ngModel)]="driver.AadharCardNumber"
+        [appStyleOnError]="(aadharCardNumber.errors?.['required'] || aadharCardNumber.errors?.['pattern']) && (aadharCardNumber.touched || aadharCardNumber.dirty)"
+      />
+      <span *ngIf="aadharCardNumber.errors?.['required'] && (aadharCardNumber.touched || aadharCardNumber.dirty)">Please Enter Valid Aadhar Number</span>
+      <span *ngIf="aadharCardNumber.errors?.['pattern'] && (aadharCardNumber.touched || aadharCardNumber.dirty)">Alphabets and Numbers only, length 10</span>
+
+      <input
+        #LicenseCardNumber="ngModel"
+        type="text"
+        name="LicenseCardNumber"
+        placeholder="LicenseCardNumber"
+        required
+        pattern="^[A-Za-z0-9]{10}$"
+        [(ngModel)]="driver.LicenseCardNumber"
+      />
+       <span *ngIf="LicenseCardNumber.errors?.['required'] && (LicenseCardNumber.touched || LicenseCardNumber.dirty)">Please Enter Valid Aadhar Number</span>
+      <span *ngIf="LicenseCardNumber.errors?.['pattern'] && (LicenseCardNumber.touched || LicenseCardNumber.dirty)">Alphabets and Numbers only, length 10</span>
+
+
+      <button [disabled] = "RegisterDriverForm.invalid" type="submit">Register</button>
+      <p><a routerLink="/Login">Login</a></p>
+    </form>
+  </div>
+</div>
