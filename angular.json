@@ -20,11 +20,18 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/@arcgis/core/assets",
+                "output": "assets"
+              }
             ],
             "styles": [
-              "src/styles.css"
-            ],
+  "node_modules/@progress/kendo-theme-default/dist/all.css",
+  "src/styles.css"
+],
+
             "scripts": []
           },
           "configurations": {

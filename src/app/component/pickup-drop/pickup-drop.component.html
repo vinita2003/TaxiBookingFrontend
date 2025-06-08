@@ -1,0 +1,52 @@
+<div class="main-container">
+<div>
+  <h2>Pickup Location</h2>
+  <kendo-autocomplete
+    [data]="addressSuggestions"
+    [(ngModel)]="pickupLocationText"
+    (valueChange)="onPickupTextChange($event)"
+    placeholder="Type pickup location"
+  ></kendo-autocomplete>
+  <p *ngIf="pickupCoords === null && pickupLocationText != ''" >Please select valid location</p>
+</div>
+  <label>
+    <input type="radio" name="pickupMethod" value="text" [(ngModel)]="pickupInputMethod" /> Input via Text
+  </label>
+  <label>
+    <input type="radio" name="pickupMethod" value="map" [(ngModel)]="pickupInputMethod" /> Select via Map
+  </label>
+
+<hr/>
+
+<div>
+  <h2>Drop Location</h2>
+  <kendo-autocomplete
+    [data]="addressSuggestions"
+    [(ngModel)]="dropLocationText"
+    (valueChange)="onDropTextChange($event)"
+    placeholder="Type drop location"
+  >
+  </kendo-autocomplete>
+
+  <p *ngIf="dropCoords === null &&  dropLocationText != ''" >Please select valid location</p>
+</div>
+
+<hr/>
+
+<div [hidden]="pickupInputMethod !== 'map' && dropInputMethod !== 'map'" #mapViewNode class="map-view"></div>
+
+<button (click)="submitLocations()" style="margin-top:20px;">Submit Locations</button>
+<label>
+    <input type="radio" name="pickupMethod" value="text" [(ngModel)]="pickupInputMethod" /> Input via Text
+  </label>
+  <label>
+    <input type="radio" name="pickupMethod" value="map" [(ngModel)]="pickupInputMethod" /> Select via Map
+  </label>
+  <label>
+    <input type="radio" name="dropMethod" value="text" [(ngModel)]="dropInputMethod" /> Input via Text
+  </label>
+  <label>
+    <input type="radio" name="dropMethod" value="map" [(ngModel)]="dropInputMethod" /> Select via Map
+  </label>
+
+</div>

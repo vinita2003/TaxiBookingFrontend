@@ -1,0 +1,24 @@
+:host {
+  display: block;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  /* align-item : center; */
+  /* flex-direction: column; */
+}
+
+.main-container {
+  width: 100%;
+  max-width: 800px; /* fix max width */
+  height: 100vh;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.map-view {
+  height: 50%;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+}
