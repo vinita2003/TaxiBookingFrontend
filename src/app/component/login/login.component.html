@@ -1,19 +1,7 @@
 <div id="container">
   <div id="form-container">
     <h2>Login</h2>
-    <form #LoginForm="ngForm" (ngSubmit)="onSubmit(LoginForm)">
-         <input
-        #name="ngModel"
-        type="text"
-        name="Name"
-        placeholder="UserName"
-        required
-        pattern="^[A-Za-z]{3,15}$"
-        [(ngModel)]="user.Name"
-        [appStyleOnError]="(name.errors?.['required'] || name.errors?.['pattern']) && (name.touched || name.dirty)"
-      />
-      <span *ngIf="name.errors?.['required'] && (name.touched || name.dirty)">Please Enter Valid Name</span>
-      <span *ngIf="name.errors?.['pattern'] && (name.touched || name.dirty)">Please Enter Alphabets only</span>
+     <form #LoginForm="ngForm" (ngSubmit)="onSubmit(LoginForm)">
       <input
         #phoneNumber="ngModel"
         type="text"

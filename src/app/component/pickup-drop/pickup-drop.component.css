@@ -9,14 +9,14 @@
 
 .main-container {
   width: 100%;
-  max-width: 800px; /* fix max width */
+  max-width: 800px;
   height: 100vh;
   padding: 16px;
   box-sizing: border-box;
 }
 
 .map-view {
-  height: 50%;
+  height: 400px;
   width: 100%;
   max-width: 800px;
   margin-top: 20px;

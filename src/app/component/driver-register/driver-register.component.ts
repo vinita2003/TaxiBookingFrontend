@@ -24,6 +24,7 @@ export class DriverRegisterComponent {
     CarType: '',
     AadharCardNumber: '',
     LicenseCardNumber: '',
+    Role: 'Driver',
   };
 
   constructor(private authService: AuthService, private router: Router) {}

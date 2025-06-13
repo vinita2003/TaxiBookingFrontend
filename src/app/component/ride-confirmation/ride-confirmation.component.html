@@ -1,0 +1,24 @@
+<div class="container">
+  <h2>Confirm Your Ride</h2>
+
+  <div class="location">
+    <p><strong>Pickup:</strong> {{ pickupLocation }}</p>
+    <p><strong>Drop:</strong> {{ dropLocation }}</p>
+  </div>
+
+  <div class="drivers">
+    <h3>Nearby Drivers (within 1 km):</h3>
+    <div *ngFor="let driver of nearbyDrivers" class="driver-card">
+      {{ driver.name }} - {{ driver.carType }}
+    </div>
+  </div>
+
+  <div class="pricing">
+    <h3>Price Estimates:</h3>
+    <div class="price">Mini: ₹ {{ prices.mini }}</div>
+    <div class="price">Sedan: ₹ {{ prices.sedan }}</div>
+    <div class="price">SUV: ₹ {{ prices.suv }}</div>
+  </div>
+
+  <button (click)="confirmBooking()">Book Confirm</button>
+</div>

@@ -21,6 +21,7 @@ export class UserRegisterComponent {
     PhoneNumber: '',
     Password: '',
     Gender: '',
+    Role: 'Rider',
   };
 
   constructor(private authService: AuthService, private router: Router) {}
@@ -32,6 +33,8 @@ export class UserRegisterComponent {
       this.authService.registerUser(form.value).subscribe({
         next: (response) => {
           console.log('Success:', response);
+          alert('Registered Successfully!');
+          this.router.navigate(['/Login']);
         },
         error: (error) => {
           console.log('Error:', error);
@@ -40,8 +43,6 @@ export class UserRegisterComponent {
           console.log('Request complete');
         },
       });
-      alert('Registered Successfully!');
-      this.router.navigate(['/Login']);
     } else {
       console.log('Form is invalid');
     }

@@ -11,9 +11,11 @@ import { AutoCompleteModule } from '@progress/kendo-angular-dropdowns';
 import { PickupDropComponent } from './component/pickup-drop/pickup-drop.component';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MapSelectorComponent } from './map-selector/map-selector.component';
+import { RideConfirmationComponent } from './component/ride-confirmation/ride-confirmation.component';
 
 @NgModule({
-  declarations: [AppComponent, PickupDropComponent],
+  declarations: [AppComponent, PickupDropComponent, MapSelectorComponent, RideConfirmationComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
