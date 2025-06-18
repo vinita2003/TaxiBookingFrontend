@@ -27,11 +27,11 @@
                 "output": "assets"
               }
             ],
-            "styles": [
+           "styles": [
   "node_modules/@progress/kendo-theme-default/dist/all.css",
+  "node_modules/@arcgis/core/assets/esri/themes/light/main.css",
   "src/styles.css"
 ],
-
             "scripts": []
           },
           "configurations": {

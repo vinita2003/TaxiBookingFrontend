@@ -1,0 +1,42 @@
+<div class="main-container">
+<div>
+  <h2>Pickup Location</h2>
+  <kendo-autocomplete
+  [data]="addressSuggestions"
+  [(ngModel)]="pickupLocationText"
+  placeholder="Type pickup location"
+  (focus)="onPickupFocus()"
+  (valueChange)="onLocationTextChange('pickup', $event)">
+</kendo-autocomplete>
+  <p *ngIf="pickupCoords === null && pickupLocationText != ''" >Please select valid location</p>
+
+
+<hr/>
+
+<div>
+  <h2>Drop Location</h2>
+
+  <kendo-autocomplete
+  [data]="addressSuggestions"
+  [(ngModel)]="dropLocationText"
+  placeholder="Type drop location"
+  (focus)="onDropFocus()"
+  (valueChange)="onLocationTextChange('drop', $event)">
+</kendo-autocomplete>
+
+  <p *ngIf="dropCoords === null &&  dropLocationText != ''" >Please select valid location</p>
+</div>
+<kendo-button (click) = "onButtonClick()">select map</kendo-button>
+
+
+
+<hr/>
+
+<!-- <div [hidden]="inputMethod !== 'map'" #mapViewNode class="map-view"></div> -->
+ <app-map-selector *ngIf="inputMethod === 'map'" [mode]="mapApplyOnPickUpYaDrop" [location]="locationText" (locationSelected)="onMapLocationSelected($event)"></app-map-selector>
+
+<button (click)="submitLocations()" style="margin-top:20px;">Submit Locations</button>
+<!-- <app-ride-confirmation hidden  [pickupAndDropCoordinate] = " bookingData"></app-ride-confirmation> -->
+ 
+
+</div>
