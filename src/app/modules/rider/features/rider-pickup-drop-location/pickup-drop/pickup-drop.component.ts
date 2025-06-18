@@ -1,23 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { PickupDropApiService } from './pickup-drop-api.service';
 import { PickupDropModel } from './pickup-drop-model';
-import {
-  Subject,
-  debounceTime,
-  distinctUntilChanged,
-  of,
-  switchMap,
-} from 'rxjs';
 import { GeocodeService } from 'src/app/core/services/geocode/geocode.service';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-pickup-drop',
   templateUrl: './pickup-drop.component.html',
   styleUrls: ['./pickup-drop.component.css'],
 })
-export class PickupDropComponent implements OnInit {
+export class PickupDropComponent {
   pickupLocationText: string = '';
   dropLocationText: string = '';
   pickupCoords: { longitude: number; latitude: number } | null = null;
@@ -27,41 +19,11 @@ export class PickupDropComponent implements OnInit {
   locationText: string = '';
   addressSuggestions: string[] = [];
   bookingData: PickupDropModel;
-  private searchSubject = new Subject<{
-    type: 'pickup' | 'drop';
-    text: string;
-  }>();
   constructor(
     private geocodeService: GeocodeService,
     private pickupDropApiService: PickupDropApiService,
     private router: Router
   ) {}
-
-  ngOnInit(): void {
-    // this.searchSubject
-    //   .pipe(
-    //     debounceTime(300),
-    //     distinctUntilChanged((prev, curr) => prev.text === curr.text),
-    //     switchMap(({ type, text }) =>
-    //       text
-    //         ? this.geocodeService.getSuggestions(text).pipe(
-    //             tap((suggestions) => {
-    //               this.addressSuggestions = suggestions;
-    //             }),
-    //             switchMap(() => this.geocodeService.geocodeAddress(text)),
-    //             tap((coords) => {
-    //               if (type === 'pickup') {
-    //                 this.pickupCoords = coords;
-    //               } else {
-    //                 this.dropCoords = coords;
-    //               }
-    //             })
-    //           )
-    //         : of(null)
-    //     )
-    //   )
-    //   .subscribe();
-  }
 
   onPickupFocus(): void {
     this.addressSuggestions = [];
@@ -81,8 +43,23 @@ export class PickupDropComponent implements OnInit {
     } else {
       this.dropLocationText = text;
     }
-
-    this.searchSubject.next({ type, text });
+    this.geocodeService.getSuggestions(text).then((data) => {
+      console.log(data);
+      this.addressSuggestions = data;
+    });
+    this.geocodeService.geocodeAddress(text).then((data) => {
+      if (type === 'pickup') {
+        this.pickupCoords = {
+          longitude: data.longitude,
+          latitude: data.latitude,
+        };
+      } else {
+        this.dropCoords = {
+          longitude: data.longitude,
+          latitude: data.latitude,
+        };
+      }
+    });
   }
 
   onButtonClick(): void {
@@ -100,14 +77,10 @@ export class PickupDropComponent implements OnInit {
   }) {
     if (this.mapApplyOnPickUpYaDrop === 'pickup') {
       this.pickupCoords = event.coords;
-      this.pickupLocationText = event.address
-        ? event.address
-        : this.pickupLocationText;
+      this.pickupLocationText = event.address;
     } else {
-      this.dropCoords = event.coords ? event.coords : this.dropCoords;
-      this.dropLocationText = event.address
-        ? event.address
-        : this.dropLocationText;
+      this.dropCoords = event.coords;
+      this.dropLocationText = event.address;
     }
     this.inputMethod = 'manual';
   }

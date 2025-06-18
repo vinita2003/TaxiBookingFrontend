@@ -1,0 +1,29 @@
+.car-options {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-direction: column;
+}
+
+.car-card {
+  /* padding: 1rem; */
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  width: 500px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  
+}
+
+.car-card:hover {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+.car-card.selected {
+  border-color: #007bff;
+  background-color: #e6f0ff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}

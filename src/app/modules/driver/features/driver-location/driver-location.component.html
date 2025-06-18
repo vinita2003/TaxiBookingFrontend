@@ -10,12 +10,12 @@
   ></kendo-switch>
   </div>
 
-  <!-- <kendo-popup [anchor] = "toggleBtnRef" *ngIf="showPopup" class = "popup-template" (close) = "showPopup= false">
+  <kendo-popup [anchor] = "toggleBtnRef" *ngIf="showPopup" class = "popup-template" (close) = "showPopup= false">
      <div style="padding: 1rem">
     <p><strong>Change Status</strong></p>
-    <p>Please switch your status to <strong>Online</strong> to start sharing location.</p>
+    <p>Please switch your status to <strong>Online</strong></p>
   </div>
-  </kendo-popup> -->
+  </kendo-popup>
 <kendo-autocomplete
     [(ngModel)]="address"
     [data]="suggestions"

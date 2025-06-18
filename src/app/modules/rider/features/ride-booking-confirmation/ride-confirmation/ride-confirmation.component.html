@@ -1,4 +1,23 @@
 <p>ride-confirmation works vinita</p>
 <app-map-viewer 
   [pickupAndDropCoordinate]="pickupAndDropCoordinate">></app-map-viewer>
+  <div class="car-options">
+  <div
+    *ngFor="let car of carTypes"
+    class="car-card"
+    [class.selected]="selectedCar?.name === car.name"
+    (click)="selectCar(car)"
+  >
+    <h3>{{ car.name }}</h3>
+    <p>Estimated Fare: ₹{{ calculateFare(car.ratePerKm) }}</p>
+  </div>
+
+  <button 
+  class="ride-confirm-btn"
+  [disabled]="!selectedCar"
+  (click)="confirmRide()"
+>
+  Ride Confirmation
+</button>
+</div>
 

@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class DriverLocationApiService {
   private readonly DriverRegisterLocationUrl =
-    'https://localhost:7125/api/DriverLocation/SendLocation';
+    'https://localhost:7125/api/Driver/StoreDriverLocationAndSendToRider';
 
   private readonly DriverRegisterAvailabilityUrl =
     'https://localhost:7125/api/Driver/StoreDriverAvailability';

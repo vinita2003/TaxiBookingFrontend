@@ -6,6 +6,7 @@ import { NgIf } from '@angular/common';
 import { LoginApiService } from './login-api.service';
 import { jwtDecode } from 'jwt-decode';
 import { DecodedToken } from './login-model';
+import { SignalrDriverService } from '../signalr-driver/signalr-driver.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,11 @@ export class LoginComponent {
     PhoneNumber: '',
     Password: '',
   };
-  constructor(private authService: LoginApiService, private router: Router) {}
+  constructor(
+    private authService: LoginApiService,
+    private router: Router,
+    private signalrServices: SignalrDriverService
+  ) {}
 
   onSubmit(form: NgForm): void {
     console.log(form.value);
@@ -38,6 +43,8 @@ export class LoginComponent {
         localStorage.setItem('Role', role);
 
         if (role === 'Rider') {
+          this.signalrServices.initConnection();
+          this.signalrServices.startConnection();
           this.router.navigate(['/PickUpAndDropLocation']);
         } else {
           this.router.navigate(['/DriverLocation']);

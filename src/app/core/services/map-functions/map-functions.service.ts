@@ -26,6 +26,8 @@ export class MapFunctionsService {
 
   addMarker(view: MapView, lng: number, lat: number, color: string): Graphic {
     console.log('shahhhhh');
+    console.log(lng);
+    console.log(lat);
     const marker = new Graphic({
       geometry: new Point({ longitude: lng, latitude: lat }),
       symbol: {

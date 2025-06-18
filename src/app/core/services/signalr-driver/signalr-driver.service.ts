@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
 })
 export class SignalrDriverService {
   private hubConnection: signalR.HubConnection;
-  public driverLocationSubject = new BehaviorSubject<any>(2);
+  public driverLocationSubject = new BehaviorSubject<any>(null);
   driverLocation$ = this.driverLocationSubject.asObservable();
 
   public initConnection(): void {
@@ -16,6 +16,8 @@ export class SignalrDriverService {
       .withUrl('https://localhost:7125/driverHub')
       .withAutomaticReconnect()
       .build();
+
+    this.registerListeners();
 
     console.log('coonection init');
   }

@@ -35,7 +35,6 @@ export class DriverLocationComponent implements OnInit {
       this.showPopup = false;
       this.Availabilty = 'Online';
       this.signalrService.startConnection();
-      this.signalrService.registerListeners();
     } else {
       this.showPopup = true;
       this.Availabilty = 'Offline';
@@ -54,8 +53,6 @@ export class DriverLocationComponent implements OnInit {
         next: (response) => {
           console.log('Success:', response);
           alert(' Driver Availabilty submitted');
-
-          // this.router.navigate(['/RideConfirmation']);
         },
         error: (error) => {
           console.log('Error:', error);
@@ -97,12 +94,19 @@ export class DriverLocationComponent implements OnInit {
       console.log(data);
       this.suggestions = data;
     });
+    this.geocodeService.geocodeAddress(query).then((data) => {
+      (this.latitude = data.latitude), (this.longitude = data.longitude);
+    });
   }
 
   selectSuggestion(text: string) {
     this.address = text;
     this.suggestions = [];
-    this.geocodeService.geocodeAddress(text);
+    console.log(this.latitude);
+    console.log(this.longitude);
+    this.geocodeService.geocodeAddress(text).then((data) => {
+      (this.latitude = data.latitude), (this.longitude = data.longitude);
+    });
   }
 
   submitLocation() {
@@ -123,8 +127,6 @@ export class DriverLocationComponent implements OnInit {
         next: (response) => {
           console.log('Success:', response);
           alert(' Driver Locations submitted');
-
-          // this.router.navigate(['/RideConfirmation']);
         },
         error: (error) => {
           console.log('Error:', error);

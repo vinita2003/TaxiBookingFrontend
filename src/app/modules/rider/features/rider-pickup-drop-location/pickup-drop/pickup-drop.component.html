@@ -6,7 +6,10 @@
   [(ngModel)]="pickupLocationText"
   placeholder="Type pickup location"
   (focus)="onPickupFocus()"
-  (valueChange)="onLocationTextChange('pickup', $event)">
+  (filterChange) = "onLocationTextChange('pickup', $event)"
+   [filterable]="true"
+  >
+
 </kendo-autocomplete>
   <p *ngIf="pickupCoords === null && pickupLocationText != ''" >Please select valid location</p>
 
@@ -21,8 +24,10 @@
   [(ngModel)]="dropLocationText"
   placeholder="Type drop location"
   (focus)="onDropFocus()"
-  (valueChange)="onLocationTextChange('drop', $event)">
+  (filterChange) = "onLocationTextChange('drop', $event)"
+  [filterable]="true">
 </kendo-autocomplete>
+
 
   <p *ngIf="dropCoords === null &&  dropLocationText != ''" >Please select valid location</p>
 </div>
@@ -32,11 +37,10 @@
 
 <hr/>
 
-<!-- <div [hidden]="inputMethod !== 'map'" #mapViewNode class="map-view"></div> -->
  <app-map-selector *ngIf="inputMethod === 'map'" [mode]="mapApplyOnPickUpYaDrop" [location]="locationText" (locationSelected)="onMapLocationSelected($event)"></app-map-selector>
 
 <button (click)="submitLocations()" style="margin-top:20px;">Submit Locations</button>
-<!-- <app-ride-confirmation hidden  [pickupAndDropCoordinate] = " bookingData"></app-ride-confirmation> -->
+
  
 
 </div>

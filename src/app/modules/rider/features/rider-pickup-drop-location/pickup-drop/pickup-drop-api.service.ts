@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class PickupDropApiService {
   private readonly RiderPickUpAndDropUrl =
-    'https://localhost:7125/api/Location/StoreRiderLocation';
+    'https://localhost:7125/api/Rider/StoreRiderLocation';
 
   constructor(private http: HttpClient) {}
 

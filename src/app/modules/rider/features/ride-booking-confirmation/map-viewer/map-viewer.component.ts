@@ -14,6 +14,7 @@ import { MapFunctionsService } from 'src/app/core/services/map-functions/map-fun
 import { PickupDropModel } from '../../rider-pickup-drop-location/pickup-drop/pickup-drop-model';
 import { SignalrDriverService } from 'src/app/core/services/signalr-driver/signalr-driver.service';
 import Polyline from '@arcgis/core/geometry/Polyline';
+import { DistanceService } from 'src/app/core/services/distance/distance.service';
 interface DriverMarker {
   driverId: string;
   marker: __esri.Graphic;
@@ -33,8 +34,8 @@ export class MapViewerComponent {
 
   constructor(
     private mapFunction: MapFunctionsService,
-    private geocodeService: GeocodeService,
-    private signalrService: SignalrDriverService
+    private signalrService: SignalrDriverService,
+    private distanceService: DistanceService
   ) {}
 
   driverMarkers: DriverMarker[] = [];
@@ -104,69 +105,98 @@ export class MapViewerComponent {
       );
       this.view.graphics.add(polylineGraphic);
 
-      this.signalrService.driverLocation$.subscribe((location) => {
-        console.log(location);
-        if (
-          !location ||
-          !this.isWithin1km(
+      this.signalrService.driverLocation$.subscribe((driverLocation) => {
+        console.log(driverLocation);
+        console.log(
+          this.distanceService.calculateDistance(
             this.pickupAndDropCoordinate.PickUpLocationLongitude,
             this.pickupAndDropCoordinate.PickUpLocationLatitude,
-            location
+            driverLocation.driverLocationLatitude,
+            driverLocation.driverLocationLongitude
           )
-        )
-          return;
-
-        console.log('vinita shah driver location');
-        const existing = this.driverMarkers.find(
-          (d) => d.driverId === location.driverId
         );
 
-        if (existing) {
-          // Update marker geometry
+        if (!driverLocation) return;
+
+        console.log('vinita shah driver location');
+        console.log(this.driverMarkers);
+        const existing = this.driverMarkers.find(
+          (d) => d.driverId === driverLocation.driverId
+        );
+        if (
+          existing &&
+          !(
+            this.distanceService.calculateDistance(
+              this.pickupAndDropCoordinate.PickUpLocationLongitude,
+              this.pickupAndDropCoordinate.PickUpLocationLatitude,
+              driverLocation.driverLocationLatitude,
+              driverLocation.driverLocationLongitude
+            ) <= 1
+          )
+        ) {
+          this.mapFunction.removeMarker(this.view, existing.marker);
+        } else if (
+          existing &&
+          this.distanceService.calculateDistance(
+            this.pickupAndDropCoordinate.PickUpLocationLongitude,
+            this.pickupAndDropCoordinate.PickUpLocationLatitude,
+            driverLocation.driverLocationLatitude,
+            driverLocation.driverLocationLongitude
+          ) <= 1
+        ) {
           existing.marker.geometry = {
             type: 'point',
-            longitude: location.longitude,
-            latitude: location.latitude,
+            longitude: driverLocation.driverLocationLongitude,
+            latitude: driverLocation.driverLocationLatitude,
           };
         } else {
-          // Add new marker
           const marker = this.mapFunction.addMarker(
             this.view,
-            location.longitude,
-            location.latitude,
+            driverLocation.driverLocationLongitude,
+            driverLocation.driverLocationLatitude,
             'blue'
           );
-          this.driverMarkers.push({ driverId: location.driverId, marker });
+          this.driverMarkers.push({
+            driverId: driverLocation.driverId,
+            marker,
+          });
         }
       });
     });
   }
-  setLocation(): void {
-    console.log('vinita');
-  }
 
-  isWithin1km(
-    pickupLongitude: number,
-    pickupLatitude: number,
-    driverLocation: { latitude: number; longitude: number }
-  ): boolean {
-    const toRad = (value: number): number => (value * Math.PI) / 180;
+  // isWithin1km(
+  //   pickupLongitude: number,
+  //   pickupLatitude: number,
+  //   driverLocation: {
+  //     driverLocationLatitude: number;
+  //     driverLocationLongitude: number;
+  //   }
+  // ): boolean {
+  //   const toRad = (value: number): number => (value * Math.PI) / 180;
 
-    const R = 6371; // Radius of Earth in kilometers
+  //   console.log(pickupLatitude);
+  //   console.log(pickupLongitude);
+  //   console.log(driverLocation.driverLocationLongitude);
+  //   console.log(driverLocation.driverLocationLatitude);
 
-    const dLat = toRad(driverLocation.latitude - pickupLatitude);
-    const dLon = toRad(driverLocation.longitude - pickupLongitude);
+  //   const R = 6371;
 
-    const lat1 = toRad(pickupLatitude);
-    const lat2 = toRad(driverLocation.latitude);
+  //   const dLat = toRad(driverLocation.driverLocationLatitude - pickupLatitude);
+  //   const dLon = toRad(
+  //     driverLocation.driverLocationLongitude - pickupLongitude
+  //   );
 
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+  //   const lat1 = toRad(pickupLatitude);
+  //   const lat2 = toRad(driverLocation.driverLocationLatitude);
 
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
+  //   const a =
+  //     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+  //     Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
 
-    return distance <= 1; // true if within 1 km
-  }
+  //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  //   const distance = R * c;
+
+  //   return distance <= 5;
+  //}
 }
