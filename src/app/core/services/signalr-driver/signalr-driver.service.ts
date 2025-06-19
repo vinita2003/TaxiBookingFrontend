@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SignalrDriverService {
-  private hubConnection: signalR.HubConnection;
-  public driverLocationSubject = new BehaviorSubject<any>(null);
+  public hubConnection: signalR.HubConnection;
+  public driverLocationSubject = new ReplaySubject<any>(1);
   driverLocation$ = this.driverLocationSubject.asObservable();
 
   public initConnection(): void {
@@ -41,6 +41,11 @@ export class SignalrDriverService {
     this.hubConnection.on('ReceiveDriverLocation', (location) => {
       console.log('Received location:', location);
       this.driverLocationSubject.next(location);
+    });
+
+    this.hubConnection.on('ReceiveRideRequest', (rideDetails) => {
+      console.log('Received Ride Request:', rideDetails);
+      this.driverLocationSubject.next(rideDetails);
     });
   }
 }

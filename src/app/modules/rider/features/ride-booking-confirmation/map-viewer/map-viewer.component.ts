@@ -131,7 +131,7 @@ export class MapViewerComponent {
               this.pickupAndDropCoordinate.PickUpLocationLatitude,
               driverLocation.driverLocationLatitude,
               driverLocation.driverLocationLongitude
-            ) <= 1
+            ) <= 10
           )
         ) {
           this.mapFunction.removeMarker(this.view, existing.marker);
@@ -142,7 +142,7 @@ export class MapViewerComponent {
             this.pickupAndDropCoordinate.PickUpLocationLatitude,
             driverLocation.driverLocationLatitude,
             driverLocation.driverLocationLongitude
-          ) <= 1
+          ) <= 10
         ) {
           existing.marker.geometry = {
             type: 'point',

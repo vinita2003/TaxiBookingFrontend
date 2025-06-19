@@ -3,6 +3,7 @@ import { ColumnMenuAutoSizeColumnComponent } from '@progress/kendo-angular-grid'
 import { GeocodeService } from 'src/app/core/services/geocode/geocode.service';
 import { DriverLocationApiService } from './driver-location-api.service';
 import { SignalrDriverService } from 'src/app/core/services/signalr-driver/signalr-driver.service';
+import * as signalR from '@microsoft/signalr';
 
 @Component({
   selector: 'app-driver-location',
@@ -17,6 +18,7 @@ export class DriverLocationComponent implements OnInit {
   isOnline: boolean = false;
   showPopup: boolean = true;
   Availabilty: 'Online' | 'Offline' = 'Offline';
+  hubConnection: any;
 
   constructor(
     private geocodeService: GeocodeService,
@@ -35,6 +37,9 @@ export class DriverLocationComponent implements OnInit {
       this.showPopup = false;
       this.Availabilty = 'Online';
       this.signalrService.startConnection();
+      this.signalrService.driverLocation$.subscribe((rideDetails) => {
+        console.log('Ride Details', rideDetails);
+      });
     } else {
       this.showPopup = true;
       this.Availabilty = 'Offline';
@@ -111,6 +116,17 @@ export class DriverLocationComponent implements OnInit {
 
   submitLocation() {
     console.log(this.latitude, this.longitude, this.address);
+    if (
+      this.signalrService.hubConnection.state ===
+      signalR.HubConnectionState.Disconnected
+    ) {
+      this.hubConnection
+        .start()
+        .then(() => {
+          console.log('SignalR connection restarted');
+        })
+        .catch((err: any) => console.error('SignalR reconnection error:', err));
+    }
     const storeDriverLocationAndStatus: {
       Availabilty: 'Online' | 'Offline';
       DriverLocationLongitude: number;

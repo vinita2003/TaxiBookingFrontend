@@ -20,6 +20,8 @@ export class LoginComponent {
     PhoneNumber: '',
     Password: '',
   };
+
+  Role: string;
   constructor(
     private authService: LoginApiService,
     private router: Router,
@@ -31,16 +33,18 @@ export class LoginComponent {
     this.authService.login(form.value).subscribe({
       next: (response) => {
         console.log('Success:', response);
-        localStorage.setItem('Token', response.token);
-        console.log(localStorage.getItem('Role'));
+        sessionStorage.setItem('Token', response.token);
+        console.log(sessionStorage.getItem('Role'));
         const decode: DecodedToken = jwtDecode(response.token);
         const role =
           decode[
             'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
           ];
+
+        this.Role = role;
         console.log(role);
-        console.log(localStorage.getItem('Role'));
-        localStorage.setItem('Role', role);
+        console.log(sessionStorage.getItem('Role'));
+        sessionStorage.setItem('Role', role);
 
         if (role === 'Rider') {
           this.signalrServices.initConnection();

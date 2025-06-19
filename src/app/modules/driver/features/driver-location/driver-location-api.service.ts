@@ -22,7 +22,7 @@ export class DriverLocationApiService {
       DriverRegisterLocationCoordinates,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('Token')}`,
+          Authorization: `Bearer ${sessionStorage.getItem('Token')}`,
         },
       }
     );
@@ -33,7 +33,7 @@ export class DriverLocationApiService {
 
     return this.http.post(this.DriverRegisterAvailabilityUrl, DriverStatus, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('Token')}`,
+        Authorization: `Bearer ${sessionStorage.getItem('Token')}`,
       },
     });
   }

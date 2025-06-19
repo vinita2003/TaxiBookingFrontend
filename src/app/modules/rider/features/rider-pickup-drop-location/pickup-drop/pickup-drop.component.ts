@@ -109,13 +109,13 @@ export class PickupDropComponent {
         console.log('Success:', response);
         alert('Locations submitted');
         console.log('Saving to localStorage:', this.bookingData);
-        localStorage.setItem(
+        sessionStorage.setItem(
           'pickupAndDropCoordinates',
           JSON.stringify(this.bookingData)
         );
         console.log(
           'Stored:',
-          localStorage.getItem('pickupAndDropCoordinates')
+          sessionStorage.getItem('pickupAndDropCoordinates')
         );
         this.router.navigate(['/RideConfirmation']);
       },

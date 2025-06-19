@@ -19,7 +19,7 @@ export class PickupDropApiService {
       RiderPickUpAndDropCoordinates,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('Token')}`,
+          Authorization: `Bearer ${sessionStorage.getItem('Token')}`,
         },
       }
     );

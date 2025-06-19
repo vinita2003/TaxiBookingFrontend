@@ -3,6 +3,7 @@ import { PickupDropModel } from '../../rider-pickup-drop-location/pickup-drop/pi
 import { Router } from '@angular/router';
 import { DistanceService } from 'src/app/core/services/distance/distance.service';
 import { GeocodeService } from 'src/app/core/services/geocode/geocode.service';
+import { RideConfirmationApiService } from './ride-confirmation-api.service';
 
 @Component({
   selector: 'app-ride-confirmation',
@@ -15,10 +16,11 @@ export class RideConfirmationComponent implements OnInit {
 
   constructor(
     private distanceService: DistanceService,
-    private geocodeService: GeocodeService
+    private geocodeService: GeocodeService,
+    private rideConfirmationApiService: RideConfirmationApiService
   ) {
     console.log(localStorage.getItem('pickupAndDropCoordinates'));
-    const data = localStorage.getItem('pickupAndDropCoordinates');
+    const data = sessionStorage.getItem('pickupAndDropCoordinates');
 
     if (data) {
       this.pickupAndDropCoordinate = JSON.parse(data);
@@ -76,11 +78,30 @@ export class RideConfirmationComponent implements OnInit {
             dropAddress = dropData;
 
             const rideDetails = {
-              pickupAddress: pickupAddress,
-              dropAddress: dropAddress,
-              estimatedFare: this.calculateFare(this.selectedCar.ratePerKm),
-              carType: this.selectedCar.name,
+              PickupAddress: pickupAddress,
+              DropAddress: dropAddress,
+              EstimatedFare: this.calculateFare(this.selectedCar.ratePerKm),
+              CarType: this.selectedCar.name,
+              PickupLatitude:
+                this.pickupAndDropCoordinate.PickUpLocationLatitude,
+              PickupLongitude:
+                this.pickupAndDropCoordinate.PickUpLocationLongitude,
             };
+
+            this.rideConfirmationApiService
+              .sendRideDetails(rideDetails)
+              .subscribe({
+                next: (response) => {
+                  console.log('Success:', response);
+                  alert('Ride Detail send Successfully');
+                },
+                error: (error) => {
+                  console.log('Error:', error);
+                },
+                complete: () => {
+                  console.log('Request complete');
+                },
+              });
 
             console.log('Ride Details:', rideDetails);
           });
