@@ -1,0 +1,28 @@
+<h1>Waiting for Ride</h1>
+<div *ngIf="rideDetails" class="ride-details-card">
+  <h2>Ride Details</h2>
+
+  <div class="detail-row">
+    <strong>Pickup Address:</strong>
+    <span>{{ rideDetails.PickupAddress }}</span>
+  </div>
+
+  <div class="detail-row">
+    <strong>Drop Address:</strong>
+    <span>{{ rideDetails.DropAddress }}</span>
+  </div>
+
+  <div class="detail-row">
+    <strong>Estimated Fare:</strong>
+    <span>₹{{ rideDetails.EstimatedFare }}</span>
+  </div>
+
+  <div class="button-group">
+  <kendo-button (click)="acceptRide()" themeColor="success">
+    Accept Ride
+  </kendo-button>
+
+  <kendo-button (click)="rejectRide()" themeColor="error">
+    Reject Ride
+  </kendo-button>
+</div>

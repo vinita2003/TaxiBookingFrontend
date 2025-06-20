@@ -13,7 +13,9 @@ export class SignalrDriverService {
 
   public initConnection(): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7125/driverHub')
+      .withUrl('https://localhost:7125/driverHub', {
+        accessTokenFactory: () => sessionStorage.getItem('Token') || '',
+      })
       .withAutomaticReconnect()
       .build();
 

@@ -29,36 +29,42 @@ export class LoginComponent {
   ) {}
 
   onSubmit(form: NgForm): void {
-    console.log(form.value);
+    console.log('Form Data:', form.value);
+
     this.authService.login(form.value).subscribe({
       next: (response) => {
-        console.log('Success:', response);
+        console.log('Login Success:', response);
+
         sessionStorage.setItem('Token', response.token);
-        console.log(sessionStorage.getItem('Role'));
+        console.log('Token stored:', sessionStorage.getItem('Token'));
+
         const decode: DecodedToken = jwtDecode(response.token);
         const role =
           decode[
             'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
           ];
-
         this.Role = role;
-        console.log(role);
-        console.log(sessionStorage.getItem('Role'));
+        console.log('Role from token:', role);
+
         sessionStorage.setItem('Role', role);
+        console.log(' Role stored:', sessionStorage.getItem('Role'));
+
+        this.signalrServices.initConnection();
+        this.signalrServices.startConnection();
 
         if (role === 'Rider') {
-          this.signalrServices.initConnection();
-          this.signalrServices.startConnection();
           this.router.navigate(['/PickUpAndDropLocation']);
         } else {
           this.router.navigate(['/DriverLocation']);
         }
       },
+
       error: (error) => {
-        console.log('Error:', error);
+        console.log('Login Error:', error);
       },
+
       complete: () => {
-        console.log('Request complete');
+        console.log('Login Request complete');
       },
     });
   }

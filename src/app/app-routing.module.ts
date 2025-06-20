@@ -7,6 +7,7 @@ import { PickupDropComponent } from './modules/rider/features/rider-pickup-drop-
 import { AuthGuard } from './core/guard/auth.guard';
 import { RideConfirmationComponent } from './modules/rider/features/ride-booking-confirmation/ride-confirmation/ride-confirmation.component';
 import { DriverLocationComponent } from './modules/driver/features/driver-location/driver-location.component';
+import { DriverWaitingComponent } from './modules/driver/features/driver-waiting/driver-waiting.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'Login', pathMatch: 'full' },
@@ -31,6 +32,13 @@ const routes: Routes = [
   {
     path: 'DriverLocation',
     component: DriverLocationComponent,
+    canActivate: [AuthGuard],
+    data: { expectedRole: 'Driver' },
+  },
+
+  {
+    path: 'DriverWaiting',
+    component: DriverWaitingComponent,
     canActivate: [AuthGuard],
     data: { expectedRole: 'Driver' },
   },

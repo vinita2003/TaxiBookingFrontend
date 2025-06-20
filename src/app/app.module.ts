@@ -18,6 +18,8 @@ import { RideConfirmationComponent } from './modules/rider/features/ride-booking
 import { MapViewerComponent } from './modules/rider/features/ride-booking-confirmation/map-viewer/map-viewer.component';
 import { DriverLocationComponent } from './modules/driver/features/driver-location/driver-location.component';
 import { PopupModule } from '@progress/kendo-angular-popup';
+import { DriverWaitingComponent } from './modules/driver/features/driver-waiting/driver-waiting.component';
+import { RideAcceptedComponent } from './modules/rider/features/ride-accepted/ride-accepted.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import { PopupModule } from '@progress/kendo-angular-popup';
     RideConfirmationComponent,
     MapViewerComponent,
     DriverLocationComponent,
+    DriverWaitingComponent,
+    RideAcceptedComponent,
   ],
   imports: [
     BrowserModule,

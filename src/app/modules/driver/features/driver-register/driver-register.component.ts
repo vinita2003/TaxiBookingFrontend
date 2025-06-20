@@ -35,7 +35,6 @@ export class DriverRegisterComponent {
   onSubmit(form: NgForm): void {
     if (form.valid) {
       console.log(this.driver);
-      // console.log(name.errors);
       this.authService.register(this.driver).subscribe({
         next: (response) => {
           console.log('Success:', response);

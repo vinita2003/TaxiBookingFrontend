@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ColumnMenuAutoSizeColumnComponent } from '@progress/kendo-angular-grid';
 import { GeocodeService } from 'src/app/core/services/geocode/geocode.service';
 import { DriverLocationApiService } from './driver-location-api.service';
 import { SignalrDriverService } from 'src/app/core/services/signalr-driver/signalr-driver.service';
-import * as signalR from '@microsoft/signalr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-driver-location',
@@ -23,7 +22,8 @@ export class DriverLocationComponent implements OnInit {
   constructor(
     private geocodeService: GeocodeService,
     private driverRegisterLocationApi: DriverLocationApiService,
-    private signalrService: SignalrDriverService
+    private signalrService: SignalrDriverService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -36,7 +36,7 @@ export class DriverLocationComponent implements OnInit {
     if (value) {
       this.showPopup = false;
       this.Availabilty = 'Online';
-      this.signalrService.startConnection();
+
       this.signalrService.driverLocation$.subscribe((rideDetails) => {
         console.log('Ride Details', rideDetails);
       });
@@ -58,6 +58,7 @@ export class DriverLocationComponent implements OnInit {
         next: (response) => {
           console.log('Success:', response);
           alert(' Driver Availabilty submitted');
+          this.router.navigate(['/DriverWaitingComponent']);
         },
         error: (error) => {
           console.log('Error:', error);
@@ -116,17 +117,6 @@ export class DriverLocationComponent implements OnInit {
 
   submitLocation() {
     console.log(this.latitude, this.longitude, this.address);
-    if (
-      this.signalrService.hubConnection.state ===
-      signalR.HubConnectionState.Disconnected
-    ) {
-      this.hubConnection
-        .start()
-        .then(() => {
-          console.log('SignalR connection restarted');
-        })
-        .catch((err: any) => console.error('SignalR reconnection error:', err));
-    }
     const storeDriverLocationAndStatus: {
       Availabilty: 'Online' | 'Offline';
       DriverLocationLongitude: number;
