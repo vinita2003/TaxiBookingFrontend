@@ -7,14 +7,14 @@ import { Observable } from 'rxjs';
 })
 export class DriverWaitingApiService {
   private readonly DriverAcceptUrl =
-    'https://localhost:7125/api/Driver/StoreDriverAvailability';
+    'https://localhost:7125/api/Driver/AcceptRide';
 
   constructor(private http: HttpClient) {}
 
-  sendRiderId(RiderId: any): Observable<any> {
-    console.log(RiderId);
+  sendRiderId(RiderDetailId: any): Observable<any> {
+    console.log(RiderDetailId);
 
-    return this.http.post(this.DriverAcceptUrl, RiderId, {
+    return this.http.post(this.DriverAcceptUrl, RiderDetailId, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem('Token')}`,
       },

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { PickupDropModel } from '../../rider-pickup-drop-location/pickup-drop/pickup-drop-model';
 import { Router } from '@angular/router';
 import { DistanceService } from 'src/app/core/services/distance/distance.service';
@@ -11,20 +11,32 @@ import { RideConfirmationApiService } from './ride-confirmation-api.service';
   styleUrls: ['./ride-confirmation.component.css'],
 })
 export class RideConfirmationComponent implements OnInit {
+  rideDetailId: number;
   pickupAndDropCoordinate: PickupDropModel;
   distanceInKm: number;
+  nearByDrivers: {
+    driverId: number;
+    driverLocationLatitude: number;
+    driverLocationLongitude: number;
+  }[] = [];
+
+  // ngOnChanges(changes: SimpleChanges) {
+  //   if (changes['rideBookingDetailId']) {
+  //     console.log('Updated rideBookingDetailId:', this.rideDetailId);
+  //   }
+  // }
 
   constructor(
     private distanceService: DistanceService,
     private geocodeService: GeocodeService,
-    private rideConfirmationApiService: RideConfirmationApiService
+    private rideConfirmationApiService: RideConfirmationApiService,
+    private router: Router
   ) {
-    console.log(localStorage.getItem('pickupAndDropCoordinates'));
-    const data = sessionStorage.getItem('pickupAndDropCoordinates');
-
-    if (data) {
-      this.pickupAndDropCoordinate = JSON.parse(data);
-    }
+    // console.log(localStorage.getItem('pickupAndDropCoordinates'));
+    // const data = sessionStorage.getItem('pickupAndDropCoordinates');
+    // if (data) {
+    //   this.pickupAndDropCoordinate = JSON.parse(data);
+    // }
   }
   carTypes = [
     { name: 'Mini', ratePerKm: 10 },
@@ -44,6 +56,16 @@ export class RideConfirmationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const state = history.state;
+
+    this.pickupAndDropCoordinate = state?.bookingData ?? null;
+    this.rideDetailId =
+      state?.riderBookingDetailsIdAndDriversLocation?.rideDetailId ?? 0;
+    this.nearByDrivers =
+      state?.riderBookingDetailsIdAndDriversLocation?.nearByDrivers ?? null;
+
+    console.log(this.pickupAndDropCoordinate);
+    console.log(this.nearByDrivers);
     this.distanceInKm = this.distanceService.calculateDistance(
       this.pickupAndDropCoordinate.PickUpLocationLongitude,
       this.pickupAndDropCoordinate.PickUpLocationLatitude,
@@ -86,6 +108,7 @@ export class RideConfirmationComponent implements OnInit {
                 this.pickupAndDropCoordinate.PickUpLocationLatitude,
               PickupLongitude:
                 this.pickupAndDropCoordinate.PickUpLocationLongitude,
+              RideDetailId: this.rideDetailId,
             };
 
             this.rideConfirmationApiService
@@ -94,16 +117,17 @@ export class RideConfirmationComponent implements OnInit {
                 next: (response) => {
                   console.log('Success:', response);
                   alert('Ride Detail send Successfully');
+                  console.log('Ride Details:', rideDetails);
+                  this.router.navigate(['/RiderShowDriverDetails']);
                 },
                 error: (error) => {
                   console.log('Error:', error);
                 },
+
                 complete: () => {
                   console.log('Request complete');
                 },
               });
-
-            console.log('Ride Details:', rideDetails);
           });
       });
   }

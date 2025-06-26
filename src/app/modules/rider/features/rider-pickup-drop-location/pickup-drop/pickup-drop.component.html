@@ -12,10 +12,7 @@
 
 </kendo-autocomplete>
   <p *ngIf="pickupCoords === null && pickupLocationText != ''" >Please select valid location</p>
-
-
 <hr/>
-
 <div>
   <h2>Drop Location</h2>
 
@@ -37,9 +34,12 @@
 
 <hr/>
 
- <app-map-selector *ngIf="inputMethod === 'map'" [mode]="mapApplyOnPickUpYaDrop" [location]="locationText" (locationSelected)="onMapLocationSelected($event)"></app-map-selector>
+ <app-map-selector *ngIf="inputMethod === 'map'"
+  [mode]="mapApplyOnPickUpYaDrop" [location]="locationText" (locationSelected)="onMapLocationSelected($event)"></app-map-selector>
 
 <button (click)="submitLocations()" style="margin-top:20px;">Submit Locations</button>
+
+
 
  
 

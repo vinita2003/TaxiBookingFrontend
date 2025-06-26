@@ -10,20 +10,24 @@
   ></kendo-switch>
   </div>
 
-  <kendo-popup [anchor] = "toggleBtnRef" *ngIf="showPopup" class = "popup-template" (close) = "showPopup= false">
+  <!-- <kendo-popup [anchor] = "toggleBtnRef" *ngIf="showPopup" class = "popup-template" (close) = "showPopup= false">
      <div style="padding: 1rem">
     <p><strong>Change Status</strong></p>
     <p>Please switch your status to <strong>Online</strong></p>
   </div>
-  </kendo-popup>
+  </kendo-popup> -->
 <kendo-autocomplete
-    [(ngModel)]="address"
-    [data]="suggestions"
+    [(ngModel)]="locationText"
+    [data]="addressSuggestions"
     placeholder="Enter address"
-    (filterChange)="onAddressChange($event)"
-    (valueChange)="onAddressChange($event)"
+    (focus) = " onFocus()"
+    (filterChange)="onLocationTextChange($event)"
     [filterable]="true"
     >
   </kendo-autocomplete>
+  <kendo-button (click) = "onButtonClick()">select map</kendo-button>
+  <app-map-selector *ngIf="inputMethod === 'map'"
+ [location]="locationText" (locationSelected)="onMapLocationSelected($event)"></app-map-selector>
+
   <button (click)="submitLocation()">Submit Location</button>
 </div>

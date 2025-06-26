@@ -19,6 +19,7 @@ export class PickupDropComponent {
   locationText: string = '';
   addressSuggestions: string[] = [];
   bookingData: PickupDropModel;
+  // rideBookingDetailId: number = 0;
   constructor(
     private geocodeService: GeocodeService,
     private pickupDropApiService: PickupDropApiService,
@@ -106,18 +107,31 @@ export class PickupDropComponent {
 
     this.pickupDropApiService.storeLocation(this.bookingData).subscribe({
       next: (response) => {
-        console.log('Success:', response);
-        alert('Locations submitted');
-        console.log('Saving to localStorage:', this.bookingData);
-        sessionStorage.setItem(
-          'pickupAndDropCoordinates',
-          JSON.stringify(this.bookingData)
-        );
         console.log(
-          'Stored:',
-          sessionStorage.getItem('pickupAndDropCoordinates')
+          'Success:',
+          response.riderBookingDetailsIdAndDriversLocation
         );
-        this.router.navigate(['/RideConfirmation']);
+        // this.rideBookingDetailId =
+        //   response.riderBookingDetailsIdAndDriversLocation.RideDetailId;
+        // console.log(this.rideBookingDetailId);
+
+        alert('Locations submitted');
+        // console.log('Saving to localStorage:', this.bookingData);
+        // sessionStorage.setItem(
+        //   'pickupAndDropCoordinates',
+        //   JSON.stringify(this.bookingData)
+        // );
+        // console.log(
+        //   'Stored:',
+        //   sessionStorage.getItem('pickupAndDropCoordinates')
+        // );
+        this.router.navigate(['/RideConfirmation'], {
+          state: {
+            riderBookingDetailsIdAndDriversLocation:
+              response.riderBookingDetailsIdAndDriversLocation,
+            bookingData: this.bookingData,
+          },
+        });
       },
       error: (error) => {
         console.log('Error:', error);

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SignalrDriverService } from 'src/app/core/services/signalr-driver/signalr-driver.service';
 import { DriverWaitingApiService } from './driver-waiting-api.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-driver-waiting',
@@ -12,41 +13,55 @@ export class DriverWaitingComponent implements OnInit {
     PickupAddress: string;
     DropAddress: string;
     EstimatedFare: number;
-    Id: number;
-  } | null = {
-    PickupAddress: 'in time tec',
-    DropAddress: 'in time tec',
-    EstimatedFare: 89,
-    Id: 1,
-  };
+    RiderRequestId: string;
+  }[] = [];
+
+  // rideDetailId: any;
 
   constructor(
     private signalrService: SignalrDriverService,
-    private driverAceptedApiService: DriverWaitingApiService
+    private driverAceptedApiService: DriverWaitingApiService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.signalrService.driverLocation$.subscribe((rideDetails) => {
-      rideDetails = {
-        PickupAddress: rideDetails.PickupAddress,
-        DropAddress: rideDetails.DropAddress,
-        EstimatedFare: rideDetails.EstimatedFare,
-        Id: rideDetails.Id,
-      };
+    this.signalrService.rideRequest$.subscribe((rideDetails) => {
       console.log('Ride Details', rideDetails);
+      this.rideDetails.push({
+        PickupAddress: rideDetails.pickupAddress,
+        DropAddress: rideDetails.dropAddress,
+        EstimatedFare: rideDetails.estimatedFare,
+        RiderRequestId: rideDetails.rideDetailId,
+      });
+    });
+    this.signalrService.rideDetailId$.subscribe((rideDetailId) => {
+      console.log('Ride Detail Id', rideDetailId);
+      this.rideDetails = this.rideDetails.filter(
+        (rideDetail) => rideDetail.RiderRequestId != rideDetailId
+      );
     });
   }
 
-  acceptRide() {
-    console.log(' Ride accepted!');
+  acceptRide(ride: any) {
+    console.log(' Ride accepted!', ride);
+    const rideDetailsSend: {
+      riderDetailId: number;
+    } = {
+      riderDetailId: ride?.RiderRequestId,
+    };
+    this.router.navigate(['/DriverShowRiderDetails'], {
+      state: {
+        rideDetailsSend: rideDetailsSend,
+      },
+    });
     this.driverAceptedApiService
-      .sendRiderId(this.rideDetails?.Id)
-      .subscribe((driverinfo) => {
-        console.log('driverinfo', driverinfo);
+      .sendRiderId(rideDetailsSend)
+      .subscribe((response) => {
+        console.log('driverinfo', response);
       });
   }
 
-  rejectRide() {
-    console.log(' Ride rejected!');
+  rejectRide(ride: any) {
+    console.log(' Ride rejected!', ride);
   }
 }

@@ -3,6 +3,7 @@ import { GeocodeService } from 'src/app/core/services/geocode/geocode.service';
 import { DriverLocationApiService } from './driver-location-api.service';
 import { SignalrDriverService } from 'src/app/core/services/signalr-driver/signalr-driver.service';
 import { Router } from '@angular/router';
+import { UpdateLivelocationService } from 'src/app/core/services/update-livelocation/update-livelocation.service';
 
 @Component({
   selector: 'app-driver-location',
@@ -12,12 +13,14 @@ import { Router } from '@angular/router';
 export class DriverLocationComponent implements OnInit {
   latitude: number = 0;
   longitude: number = 0;
-  address: string = '';
-  suggestions: string[] = [];
+  locationText: string = '';
+  addressSuggestions: string[] = [];
   isOnline: boolean = false;
   showPopup: boolean = true;
-  Availabilty: 'Online' | 'Offline' = 'Offline';
-  hubConnection: any;
+  Availability: 'Online' | 'Offline' = 'Offline';
+  inputMethod: 'manual' | 'map' = 'manual';
+  // hubConnection: any;
+  riderDetails: any;
 
   constructor(
     private geocodeService: GeocodeService,
@@ -28,45 +31,47 @@ export class DriverLocationComponent implements OnInit {
 
   ngOnInit(): void {
     this.getCurrentLocation();
-    this.signalrService.initConnection();
+    this.driverRegisterLocationApi.getAvailability().subscribe({
+      next: (data) => {
+        console.log('Driver availability:', data);
+        this.Availability = data.availability.result;
+        if (this.Availability == 'Online') {
+          this.isOnline = true;
+        }
+        console.log(data.result);
+      },
+      error: (err) => {
+        console.error('Error fetching availability:', err);
+      },
+    });
   }
 
   onToggleOnline(value: boolean) {
     this.isOnline = value;
     if (value) {
       this.showPopup = false;
-      this.Availabilty = 'Online';
-
-      this.signalrService.driverLocation$.subscribe((rideDetails) => {
-        console.log('Ride Details', rideDetails);
-      });
+      this.Availability = 'Online';
     } else {
       this.showPopup = true;
-      this.Availabilty = 'Offline';
+      this.Availability = 'Offline';
       this.signalrService.stopConnection();
     }
 
-    const storeDriverStatus: {
-      Availabilty: 'Online' | 'Offline';
-    } = {
-      Availabilty: this.Availabilty,
+    const data = {
+      Availability: this.Availability,
     };
-
-    this.driverRegisterLocationApi
-      .storeAvailability(storeDriverStatus)
-      .subscribe({
-        next: (response) => {
-          console.log('Success:', response);
-          alert(' Driver Availabilty submitted');
-          this.router.navigate(['/DriverWaitingComponent']);
-        },
-        error: (error) => {
-          console.log('Error:', error);
-        },
-        complete: () => {
-          console.log('Request complete');
-        },
-      });
+    this.driverRegisterLocationApi.storeAvailability(data).subscribe({
+      next: (response) => {
+        console.log('Success:', response);
+        alert(' Driver Availabilty submitted');
+      },
+      error: (error) => {
+        console.log('Error:', error);
+      },
+      complete: () => {
+        console.log('Request complete');
+      },
+    });
   }
 
   getCurrentLocation() {
@@ -79,7 +84,7 @@ export class DriverLocationComponent implements OnInit {
           .reverseGeocode(this.longitude, this.latitude)
           .then((data) => {
             console.log(data);
-            this.address = data;
+            this.locationText = data;
           });
       },
       (error) => {
@@ -94,35 +99,52 @@ export class DriverLocationComponent implements OnInit {
     );
   }
 
-  onAddressChange(query: string) {
-    this.address = query;
+  onFocus(): void {
+    this.addressSuggestions = [];
+    this.inputMethod = 'manual';
+  }
+
+  onButtonClick(): void {
+    this.inputMethod = 'map';
+  }
+
+  onMapLocationSelected(event: {
+    coords: { longitude: number; latitude: number };
+    address: string;
+  }) {
+    this.latitude = event.coords.latitude;
+    this.longitude = event.coords.longitude;
+    this.locationText = event.address;
+    this.inputMethod = 'manual';
+  }
+
+  onLocationTextChange(query: string) {
+    this.locationText = query;
     this.geocodeService.getSuggestions(query).then((data) => {
       console.log(data);
-      this.suggestions = data;
+      this.addressSuggestions = data;
     });
     this.geocodeService.geocodeAddress(query).then((data) => {
       (this.latitude = data.latitude), (this.longitude = data.longitude);
     });
   }
 
-  selectSuggestion(text: string) {
-    this.address = text;
-    this.suggestions = [];
-    console.log(this.latitude);
-    console.log(this.longitude);
-    this.geocodeService.geocodeAddress(text).then((data) => {
-      (this.latitude = data.latitude), (this.longitude = data.longitude);
-    });
-  }
+  // selectSuggestion(text: string) {
+  //   this.locationText = text;
+  //   this.addressSuggestions = [];
+  //   console.log(this.latitude);
+  //   console.log(this.longitude);
+  //   this.geocodeService.geocodeAddress(text).then((data) => {
+  //     (this.latitude = data.latitude), (this.longitude = data.longitude);
+  //   });
+  // }
 
   submitLocation() {
-    console.log(this.latitude, this.longitude, this.address);
+    console.log(this.latitude, this.longitude, this.locationText);
     const storeDriverLocationAndStatus: {
-      Availabilty: 'Online' | 'Offline';
       DriverLocationLongitude: number;
       DriverLocationLatitude: number;
     } = {
-      Availabilty: this.Availabilty,
       DriverLocationLongitude: this.longitude,
       DriverLocationLatitude: this.latitude,
     };
@@ -133,6 +155,9 @@ export class DriverLocationComponent implements OnInit {
         next: (response) => {
           console.log('Success:', response);
           alert(' Driver Locations submitted');
+          this.router.navigate(['/DriverWaiting'], {
+            state: { rideBookingDetails: this.riderDetails },
+          });
         },
         error: (error) => {
           console.log('Error:', error);
