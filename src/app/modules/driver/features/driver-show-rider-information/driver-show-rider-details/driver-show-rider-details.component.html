@@ -1,0 +1,16 @@
+<div *ngIf = 'riderPersonalInformation'>
+<p>driver-show-rider-details works!</p>
+<div>{{riderPersonalInformation.name}}</div>
+<div>{{riderPersonalInformation.gender}}</div>
+<div>{{riderPersonalInformation.phoneNumber}}</div>
+<app-map-viewer-for-driver *ngIf = '!reachToPickupLocation' [reachToPickupLocation] = 'reachToPickupLocation' [LocationInformation] = 'LocationInformation'></app-map-viewer-for-driver>
+<!-- <app-rider-show-driver-details hidden [LocationInformation] = 'LocationInformation'></app-rider-show-driver-details> -->
+ <app-map-viewer-for-driver *ngIf = 'reachToPickupLocation' [reachToPickupLocation] = 'reachToPickupLocation' [LocationInformation] = 'LocationInformation'></app-map-viewer-for-driver>
+
+<kendo-button *ngIf = '!reachToPickupLocation' (click)="driverMovement()">Go to Pickup Location</kendo-button>
+<kendo-button *ngIf = 'reachToPickupLocation' (click)="driverMovement()">Start Ride</kendo-button>
+</div>
+<!-- <kendo-button (click)="cancelRide()">Cancel Ride</kendo-button> -->
+
+
+

@@ -5,18 +5,18 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class PickupDropApiService {
-  private readonly RiderPickUpAndDropUrl =
-    'https://localhost:7125/api/Rider/StoreRiderLocation';
+export class DriverShowRiderDetailsApiService {
+  private readonly DriverLiveLocationInformationUrl =
+    'https://localhost:7125/api/Driver/updateLiveLocation';
 
   constructor(private http: HttpClient) {}
 
-  storeLocation(RiderPickUpAndDropCoordinates: any): Observable<any> {
-    console.log(RiderPickUpAndDropCoordinates);
+  sendDriverLiveLocationInofrmationId(RiderId: any): Observable<any> {
+    console.log(RiderId);
 
     return this.http.post(
-      this.RiderPickUpAndDropUrl,
-      RiderPickUpAndDropCoordinates,
+      this.DriverLiveLocationInformationUrl,
+      { RiderId },
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('Token')}`,

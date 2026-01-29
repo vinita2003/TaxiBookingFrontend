@@ -9,6 +9,6 @@ export class AuthService {
     return Boolean(token);
   }
   getRole(): 'Driver' | 'Rider' | null {
-    return localStorage.getItem('Role') as 'Driver' | 'Rider' | null;
+    return sessionStorage.getItem('Role') as 'Driver' | 'Rider' | null;
   }
 }

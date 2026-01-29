@@ -19,7 +19,7 @@ export class MapFunctionsService {
     map: Map,
     container: HTMLDivElement,
     center: number[],
-    zoom: number = 15
+    zoom: number = 12
   ): MapView {
     return new MapView({ container, map, center, zoom });
   }

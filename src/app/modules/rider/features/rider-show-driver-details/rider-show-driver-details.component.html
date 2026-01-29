@@ -1,0 +1,9 @@
+<div *ngIf = 'LocationInformation && driverInformation'>
+<p>rider-show-driver-details works!</p>
+<div>{{driverInformation.name}}</div>
+<div>{{driverInformation.phoneNumber}}</div>
+<div>{{driverInformation.gender}}</div>
+<div>{{driverInformation.carNumber}}</div>
+<app-map-viewer-for-driver *ngIf = '!reachToPickupLocation' [reachToPickupLocation] = 'reachToPickupLocation' [LocationInformation] = 'LocationInformation'></app-map-viewer-for-driver>
+<app-map-viewer-for-driver *ngIf = 'reachToPickupLocation' [reachToPickupLocation] = 'reachToPickupLocation' [LocationInformation] = 'LocationInformation'></app-map-viewer-for-driver>
+</div>

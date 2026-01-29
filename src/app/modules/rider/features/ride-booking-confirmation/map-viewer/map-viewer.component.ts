@@ -16,7 +16,7 @@ import { SignalrDriverService } from 'src/app/core/services/signalr-driver/signa
 import Polyline from '@arcgis/core/geometry/Polyline';
 import { DistanceService } from 'src/app/core/services/distance/distance.service';
 interface DriverMarker {
-  driverId: string;
+  driverId: number;
   marker: __esri.Graphic;
 }
 @Component({
@@ -28,6 +28,11 @@ export class MapViewerComponent {
   @ViewChild('mapContainer') mapViewEl!: ElementRef;
   @Input() pickupAndDropCoordinate: PickupDropModel;
   @Input() location: string = '';
+  @Input() nearByDriver: {
+    driverId: number;
+    driverLocationLatitude: number;
+    driverLocationLongitude: number;
+  }[] = [];
   map: Map;
   view: MapView;
   marker: Graphic;
@@ -43,6 +48,7 @@ export class MapViewerComponent {
   ngAfterViewInit(): void {
     console.log(this.pickupAndDropCoordinate);
     this.loadMap();
+    console.log(this.nearByDriver);
   }
 
   loadMap(): void {
@@ -105,6 +111,19 @@ export class MapViewerComponent {
       );
       this.view.graphics.add(polylineGraphic);
 
+      this.nearByDriver.forEach((driver) => {
+        const marker = this.mapFunction.addMarker(
+          this.view,
+          driver.driverLocationLongitude,
+          driver.driverLocationLatitude,
+          'blue'
+        );
+        this.driverMarkers.push({
+          driverId: driver.driverId,
+          marker,
+        });
+      });
+
       this.signalrService.driverLocation$.subscribe((driverLocation) => {
         console.log(driverLocation);
         console.log(
@@ -131,7 +150,7 @@ export class MapViewerComponent {
               this.pickupAndDropCoordinate.PickUpLocationLatitude,
               driverLocation.driverLocationLatitude,
               driverLocation.driverLocationLongitude
-            ) <= 1
+            ) <= 10
           )
         ) {
           this.mapFunction.removeMarker(this.view, existing.marker);
@@ -142,7 +161,7 @@ export class MapViewerComponent {
             this.pickupAndDropCoordinate.PickUpLocationLatitude,
             driverLocation.driverLocationLatitude,
             driverLocation.driverLocationLongitude
-          ) <= 1
+          ) <= 10
         ) {
           existing.marker.geometry = {
             type: 'point',
@@ -160,6 +179,17 @@ export class MapViewerComponent {
             driverId: driverLocation.driverId,
             marker,
           });
+        }
+      });
+      this.signalrService.driverAvailability$.subscribe((driverId) => {
+        const existing = this.driverMarkers.find(
+          (d) => d.driverId === driverId
+        );
+        if (existing) {
+          this.mapFunction.removeMarker(this.view, existing.marker);
+          this.driverMarkers = this.driverMarkers.filter(
+            (d) => d.driverId !== driverId
+          );
         }
       });
     });

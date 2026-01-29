@@ -12,7 +12,17 @@ export class DriverLocationApiService {
   private readonly DriverRegisterAvailabilityUrl =
     'https://localhost:7125/api/Driver/StoreDriverAvailability';
 
+  private readonly DriverAvailabilityBaseUrl =
+    'https://localhost:7125/api/Driver/GetAvailability';
   constructor(private http: HttpClient) {}
+
+  getAvailability(): Observable<any> {
+    return this.http.get(this.DriverAvailabilityBaseUrl, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem('Token')}`,
+      },
+    });
+  }
 
   storeLocation(DriverRegisterLocationCoordinates: any): Observable<any> {
     console.log(DriverRegisterLocationCoordinates);
@@ -22,7 +32,7 @@ export class DriverLocationApiService {
       DriverRegisterLocationCoordinates,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('Token')}`,
+          Authorization: `Bearer ${sessionStorage.getItem('Token')}`,
         },
       }
     );
@@ -33,7 +43,8 @@ export class DriverLocationApiService {
 
     return this.http.post(this.DriverRegisterAvailabilityUrl, DriverStatus, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('Token')}`,
+        Authorization: `Bearer ${sessionStorage.getItem('Token')}`,
+        'Content-Type': 'application/json',
       },
     });
   }
